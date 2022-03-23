@@ -31,29 +31,30 @@ const questionArray = [
 export function Quiz() {
 	const [questions, setQuestions] = useState(questionArray);
 	const [showPrev, setShowPrev] = useState(false);
-	const [showNext, setShowNext] = useState(false);
-	const [currentQuestion, setCurrentQuestion] = useState(0);
+	const [showNext, setShowNext] = useState(true);
+	const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
 	const onOptionSelected = () => {
-		setShowNext(true);
-		if (currentQuestion > 0) {
-			setShowPrev(true);
-		}
-		if (currentQuestion <= 0) {
-			setShowPrev(false);
-		}
-		if (currentQuestion + 1 == questions.length) {
-			setShowNext(false);
-		}
+		//setShowNext(true);
 	};
 	const handleNext = (selected) => {
-		setCurrentQuestion((prevState) => {
+		setCurrentQuestionIndex((prevState) => {
 			return prevState + 1;
 		});
+
+		if (currentQuestionIndex + 1 === questions.length - 1) {
+			setShowNext(false);
+		}
+
+		if (currentQuestionIndex > 0) {
+			setShowPrev(true);
+		} else {
+			setShowPrev(false);
+		}
 	};
 
 	const handlePrevious = (selected) => {
-		setCurrentQuestion((prevState) => {
+		setCurrentQuestionIndex((prevState) => {
 			return prevState - 1;
 		});
 	};
@@ -68,8 +69,8 @@ export function Quiz() {
 			}}
 		>
 			<QuizItem
-				quiz={questions[currentQuestion]}
-				srNo={currentQuestion + 1}
+				quiz={questions[currentQuestionIndex]}
+				srNo={currentQuestionIndex + 1}
 				showPrev={showPrev}
 				showNext={showNext}
 				onNextClicked={handleNext}

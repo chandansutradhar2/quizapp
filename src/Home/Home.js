@@ -5,15 +5,24 @@ import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 export function Home() {
 	const [fName, setFName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [isChecked, setIsChecked] = useState(false);
 	const [disabled, setIsDisabled] = useState(true);
+	const navigate = useNavigate();
+
+	const buttonClickHandler = () => {
+		navigate("/quiz");
+	};
+
 	const toggleButton = () => {
+		console.log("toogle button invoked");
 		if (fName.length > 0 && lastName.length > 0 && isChecked) {
 			setIsDisabled(false);
+		} else {
+			setIsDisabled(true);
 		}
 	};
 	return (
@@ -45,9 +54,10 @@ export function Home() {
 							variant="outlined"
 							value={fName}
 							onChange={(ev) => {
+								console.log("current fName", fName);
 								setFName(ev.target.value);
-								toggleButton();
 							}}
+							onBlur={toggleButton}
 						/>
 					</FormGroup>
 					<FormGroup>
@@ -58,8 +68,8 @@ export function Home() {
 							value={lastName}
 							onChange={(ev) => {
 								setLastName(ev.target.value);
-								toggleButton();
 							}}
+							onBlur={toggleButton}
 						/>
 					</FormGroup>
 
@@ -69,14 +79,20 @@ export function Home() {
 								<Checkbox
 									value={isChecked}
 									onChange={(ev) => {
-										console.log(ev);
+										setIsChecked(ev.target.checked);
+										console.log("current Checkbox", isChecked);
 									}}
+									onBlur={toggleButton}
 								/>
 							}
 							label="Are you ready to take the Quiz?"
 						/>
 					</FormGroup>
-					<Button variant="contained" disabled={disabled}>
+					<Button
+						variant="contained"
+						disabled={disabled}
+						onClick={buttonClickHandler}
+					>
 						Start Quiz
 					</Button>
 				</div>

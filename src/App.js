@@ -6,22 +6,25 @@ import { Score } from "./Score/Score";
 import { Quiz } from "./Quiz/Quiz";
 import { useState, createContext } from "react";
 
-export const ScoreContext = createContext();
+export const UserContext = createContext();
 
 function App() {
-	const [score, setScore] = useState();
+	const [user, setUser] = useState();
 
+	const handleUser = (val) => {
+		setUser(val);
+	};
 	return (
 		<div>
-			<ScoreContext.Provider value={score}>
+			<UserContext.Provider value={user}>
 				<BrowserRouter>
 					<Routes>
-						<Route path="" element={<Home />} />
+						<Route path="" element={<Home handleUser={handleUser} />} />
 						<Route path="/quiz" element={<Quiz />} />
 						<Route path="/score" element={<Score />} />
 					</Routes>
 				</BrowserRouter>
-			</ScoreContext.Provider>
+			</UserContext.Provider>
 		</div>
 	);
 }

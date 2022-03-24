@@ -4,9 +4,12 @@ import Button from "@mui/material/Button";
 import FormGroup from "@mui/material/FormGroup";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-export function Home() {
+import { UserContext } from "../App";
+export function Home(props) {
+	const user = useContext(UserContext);
+
 	const [fName, setFName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [isChecked, setIsChecked] = useState(false);
@@ -14,6 +17,8 @@ export function Home() {
 	const navigate = useNavigate();
 
 	const buttonClickHandler = () => {
+		//user = fName + " " + lastName;
+		props.handleUser(fName + " " + lastName);
 		navigate("/quiz");
 	};
 

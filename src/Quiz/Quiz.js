@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { QuizItem } from "./QuizItem";
-
+import FormLabel from "@mui/material/FormLabel";
+import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 const questionArray = [
 	{
 		title: "html stands for ",
@@ -29,33 +31,48 @@ const questionArray = [
 	},
 ];
 export function Quiz() {
-	const [questions, setQuestions] = useState(questionArray);
+	let navigate = useNavigate();
+	const questions = questionArray;
 	const [showPrev, setShowPrev] = useState(false);
 	const [showNext, setShowNext] = useState(true);
 	const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+	const [score, setScore] = useState(0);
 
-	const onOptionSelected = () => {
-		//setShowNext(true);
-	};
-	const handleNext = (selected) => {
-		setCurrentQuestionIndex((prevState) => {
-			return prevState + 1;
-		});
-
-		if (currentQuestionIndex + 1 === questions.length - 1) {
+	useEffect(() => {
+		if (currentQuestionIndex + 1 === questions.length) {
 			setShowNext(false);
+		} else {
+			setShowNext(true);
 		}
-
-		if (currentQuestionIndex > 0) {
+		if (currentQuestionIndex >= 1) {
 			setShowPrev(true);
 		} else {
 			setShowPrev(false);
 		}
+	}, [currentQuestionIndex, questions.length]);
+	const onOptionSelected = (option) => {
+		if (option === questions[currentQuestionIndex].correct) {
+			setScore((prevScore) => {
+				return prevScore + 1;
+			});
+		}
 	};
 
-	const handlePrevious = (selected) => {
+	const handleNext = () => {
+		setCurrentQuestionIndex((prevState) => {
+			return prevState + 1;
+		});
+	};
+
+	const handlePrevious = () => {
 		setCurrentQuestionIndex((prevState) => {
 			return prevState - 1;
+		});
+	};
+
+	const submit = () => {
+		navigate("/score", {
+			state: { passingScore: 50, score: (score / questions.length) * 100 },
 		});
 	};
 	return (
@@ -71,12 +88,34 @@ export function Quiz() {
 			<QuizItem
 				quiz={questions[currentQuestionIndex]}
 				srNo={currentQuestionIndex + 1}
-				showPrev={showPrev}
-				showNext={showNext}
 				onNextClicked={handleNext}
 				onPrevClicked={handlePrevious}
 				onOptionSelected={onOptionSelected}
 			/>
+			<div style={{ display: "flex", justifyContent: "space-between" }}>
+				<Button
+					variant="contained"
+					component="span"
+					onClick={() => handlePrevious()}
+					disabled={!showPrev}
+				>
+					&#60; &#60; Prev
+				</Button>
+				{currentQuestionIndex + 1 !== questions.length ? (
+					<Button
+						variant="contained"
+						component="span"
+						onClick={() => handleNext()}
+						disabled={!showNext}
+					>
+						Next &#62; &#62;
+					</Button>
+				) : (
+					<Button variant="contained" component="span" onClick={() => submit()}>
+						Submit
+					</Button>
+				)}
+			</div>
 		</div>
 	);
 }
